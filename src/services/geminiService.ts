@@ -1,8 +1,8 @@
-
 import { GeminiResponse } from '@/types/gemini';
 import { toast } from '@/components/ui/use-toast';
 
-let apiKey = '';
+// Default API key
+let apiKey = 'AIzaSyANdkOT3GdyfUoQImxSYjTbdRF9Qp1u6mQ';
 
 export const setApiKey = (key: string) => {
   apiKey = key;
@@ -13,12 +13,18 @@ export const setApiKey = (key: string) => {
 export const getApiKey = () => {
   if (!apiKey) {
     // Try to get from localStorage
-    apiKey = localStorage.getItem('gemini_api_key') || '';
+    const storedKey = localStorage.getItem('gemini_api_key');
+    if (storedKey) {
+      apiKey = storedKey;
+    } else {
+      // Use the default key if nothing in localStorage
+      apiKey = 'AIzaSyANdkOT3GdyfUoQImxSYjTbdRF9Qp1u6mQ';
+    }
   }
   return apiKey;
 };
 
-export const hasApiKey = () => !!getApiKey();
+export const hasApiKey = () => true; // Always return true since we have a default key
 
 export const generateWebsite = async (prompt: string): Promise<string> => {
   const key = getApiKey();

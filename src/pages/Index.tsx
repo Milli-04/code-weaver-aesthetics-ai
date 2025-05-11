@@ -1,13 +1,12 @@
-
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { toast } from '@/components/ui/use-toast';
 import ChatPanel from '@/components/ChatPanel';
 import PreviewPanel from '@/components/PreviewPanel';
 import ApiKeyModal from '@/components/ApiKeyModal';
 import { 
   generateWebsite, 
-  improveWebsite, 
-  hasApiKey 
+  improveWebsite,
+  setApiKey
 } from '@/services/geminiService';
 import { Message } from '@/types/gemini';
 
@@ -18,19 +17,13 @@ const Index = () => {
   const [isApiKeyModalOpen, setIsApiKeyModalOpen] = useState<boolean>(false);
   const [currentPrompt, setCurrentPrompt] = useState<string>('');
 
-  // Check for API key on initial load
-  useEffect(() => {
-    if (!hasApiKey()) {
-      setIsApiKeyModalOpen(true);
-    }
-  }, []);
+  // Set the default API key on initial load
+  useState(() => {
+    // Set the API key with the provided key
+    setApiKey('AIzaSyANdkOT3GdyfUoQImxSYjTbdRF9Qp1u6mQ');
+  });
 
   const handleSendMessage = async (message: string) => {
-    if (!hasApiKey()) {
-      setIsApiKeyModalOpen(true);
-      return;
-    }
-
     // Add user message to the chat
     setMessages(prev => [...prev, { role: 'user', content: message }]);
     setIsLoading(true);
