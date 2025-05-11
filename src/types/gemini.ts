@@ -14,3 +14,12 @@ export interface Message {
   role: 'user' | 'assistant';
   content: string;
 }
+
+export interface GeminiError {
+  error: {
+    code: number;
+    message: string;
+    status: string;
+    details: Array<any>;
+  };
+}

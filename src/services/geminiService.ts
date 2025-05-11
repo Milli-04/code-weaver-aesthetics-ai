@@ -87,6 +87,15 @@ Return ONLY the full HTML code without any explanations or markdown formatting.`
     if (!response.ok) {
       const errorData = await response.json();
       console.error('Gemini API error:', errorData);
+      
+      // Check for quota limit errors
+      if (response.status === 429) {
+        const errorMessage = errorData.error?.message || 'API quota exceeded';
+        if (errorMessage.includes('quota') || errorMessage.includes('exceeded')) {
+          throw new Error('Gemini API quota exceeded. Please try again later or upgrade your Gemini API plan.');
+        }
+      }
+      
       throw new Error(`API error: ${response.status}`);
     }
 
@@ -111,11 +120,14 @@ Return ONLY the full HTML code without any explanations or markdown formatting.`
     return htmlCode;
   } catch (error) {
     console.error('Error generating website:', error);
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    
     toast({
       title: "Error",
-      description: `Failed to generate website: ${error instanceof Error ? error.message : 'Unknown error'}`,
+      description: `Failed to generate website: ${errorMessage}`,
       variant: "destructive",
     });
+    
     throw error;
   }
 };
@@ -166,6 +178,15 @@ Return ONLY the complete, improved HTML code without any explanations or markdow
     if (!response.ok) {
       const errorData = await response.json();
       console.error('Gemini API error:', errorData);
+      
+      // Check for quota limit errors
+      if (response.status === 429) {
+        const errorMessage = errorData.error?.message || 'API quota exceeded';
+        if (errorMessage.includes('quota') || errorMessage.includes('exceeded')) {
+          throw new Error('Gemini API quota exceeded. Please try again later or upgrade your Gemini API plan.');
+        }
+      }
+      
       throw new Error(`API error: ${response.status}`);
     }
 
@@ -190,11 +211,14 @@ Return ONLY the complete, improved HTML code without any explanations or markdow
     return htmlCode;
   } catch (error) {
     console.error('Error improving website:', error);
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    
     toast({
       title: "Error", 
-      description: `Failed to improve website: ${error instanceof Error ? error.message : 'Unknown error'}`,
+      description: `Failed to improve website: ${errorMessage}`,
       variant: "destructive",
     });
+    
     throw error;
   }
 };

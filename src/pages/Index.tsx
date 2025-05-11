@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { toast } from '@/components/ui/use-toast';
 import ChatPanel from '@/components/ChatPanel';
@@ -57,11 +58,25 @@ const Index = () => {
       ]);
     } catch (error) {
       console.error('Error generating website:', error);
-      toast({
-        title: "Error",
-        description: "Failed to generate website. Please check your API key and try again.",
-        variant: "destructive",
-      });
+      
+      // Handle quota exceeded error specifically
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      
+      if (errorMessage.includes('quota') || errorMessage.includes('exceeded')) {
+        setMessages(prev => [
+          ...prev, 
+          { 
+            role: 'assistant', 
+            content: "I'm sorry, but it looks like the Gemini API quota has been exceeded. This typically happens with free tier accounts that have limited requests per minute or day. You can try again later when the quota resets, or consider upgrading your Gemini API plan for additional capacity."
+          }
+        ]);
+      } else {
+        toast({
+          title: "Error",
+          description: "Failed to generate website. Please check your API key and try again.",
+          variant: "destructive",
+        });
+      }
     } finally {
       setIsLoading(false);
     }
@@ -97,11 +112,25 @@ const Index = () => {
       });
     } catch (error) {
       console.error('Error regenerating website:', error);
-      toast({
-        title: "Error",
-        description: "Failed to regenerate website.",
-        variant: "destructive",
-      });
+      
+      // Handle quota exceeded error specifically
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      
+      if (errorMessage.includes('quota') || errorMessage.includes('exceeded')) {
+        setMessages(prev => [
+          ...prev, 
+          { 
+            role: 'assistant', 
+            content: "I'm sorry, but it looks like the Gemini API quota has been exceeded. This typically happens with free tier accounts that have limited requests per minute or day. You can try again later when the quota resets, or consider upgrading your Gemini API plan for additional capacity."
+          }
+        ]);
+      } else {
+        toast({
+          title: "Error",
+          description: "Failed to regenerate website.",
+          variant: "destructive",
+        });
+      }
     } finally {
       setIsLoading(false);
     }
